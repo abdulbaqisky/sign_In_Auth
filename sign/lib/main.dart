@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sign/signup1.dart';
 import 'package:sign/signup2.dart';
+import 'package:http/http.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,11 +35,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
 
-  /*@override
-  void initState() {
-    bool _passwordVisible = false;
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -55,9 +52,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors.white,
                   ),
                 ),
-                leading: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
+                leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(
@@ -213,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SignUp2()),
+                                      builder: (context) => Happen()),
                                 );
                               },
                               child: Text(
@@ -234,5 +236,9 @@ class _MyHomePageState extends State<MyHomePage> {
             )),
       ),
     ]);
+  }
+
+  void loginData() async {
+    String baseUrl = "https://hareo.com.ng/api/v1/auth/login";
   }
 }

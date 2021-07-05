@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sign/main.dart';
+import 'package:sign/signup2.dart';
 
 class Happen extends StatefulWidget {
   const Happen({Key? key}) : super(key: key);
@@ -47,9 +48,14 @@ class SignUp extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                leading: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
+                leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(
@@ -169,7 +175,9 @@ class SignUp extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Happen()),
+                                    builder: (context) => SignUp2(
+                                          key: _formKey,
+                                        )),
                               );
                             }
                           },
@@ -194,7 +202,8 @@ class SignUp extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MyApp()),
+                              MaterialPageRoute(
+                                  builder: (context) => SignUp2()),
                             );
                           },
                           child: Text(
