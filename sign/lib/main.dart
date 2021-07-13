@@ -1,12 +1,18 @@
+import 'dart:convert';
+import 'package:sign/loggedIn.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sign/signup1.dart';
-import 'package:sign/signup2.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 void main() {
   runApp(MyApp());
 }
+
+String email = "";
+String password = "";
+bool showSpinner = false;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -19,8 +25,11 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: MyHomePage(),
+        body: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: SafeArea(
+            child: MyHomePage(),
+          ),
         ),
       ),
     );
@@ -41,7 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
       Expanded(
         flex: 1,
         child: Container(
-          height: 150,
           color: Colors.deepOrange,
           child: Column(
             children: [
@@ -93,6 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         TextFormField(
+                          onChanged: (value) {
+                            email = value;
+                          },
                           decoration: InputDecoration(
                             labelText: 'Email address',
                             labelStyle: TextStyle(fontSize: 16),
@@ -106,6 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                         TextFormField(
+                          onChanged: (value) {
+                            password = value;
+                          },
                           decoration: InputDecoration(
                             labelText: 'Password',
                             labelStyle: TextStyle(fontSize: 16),
@@ -150,16 +164,44 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: 500,
                             height: 70,
                             child: ElevatedButton(
-                              child: Text('Log in'),
-                              onPressed: () {
-                                // Validate returns true if the form is valid, or false otherwise.
-                                if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text('Processing Data')));
-                                }
-                              },
-                            ),
+                                child: Text('Log in'),
+                                onPressed: () async {
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                  var headers = {
+                                    'Content-Type': 'application/json'
+                                  };
+                                  var request = http.Request(
+                                      'POST',
+                                      Uri.parse(
+                                          'https://dev.hareo.com.ng/api/v1/auth/login/'));
+                                  request.body = json.encode({
+                                    "email": "$email",
+                                    "password": "$password"
+                                  });
+                                  request.headers.addAll(headers);
+
+                                  http.StreamedResponse response =
+                                      await request.send();
+
+                                  if (response.statusCode == 200) {
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SignedIn(),
+                                      ),
+                                    );
+
+                                    print(
+                                        await response.stream.bytesToString());
+                                  } else {
+                                    print(response.reasonPhrase);
+                                  }
+                                }),
                           ),
                         ),
                         Row(
@@ -237,8 +279,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ]);
   }
-
-  void loginData() async {
-    String baseUrl = "https://hareo.com.ng/api/v1/auth/login";
-  }
 }
+
+/*
+Navigator.push(
+_MyHomePageState().context,
+MaterialPageRoute(builder: (context) => SignedIn()),
+);*/

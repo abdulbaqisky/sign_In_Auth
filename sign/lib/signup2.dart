@@ -121,7 +121,6 @@ class _SignUp2State extends State<SignUp2> {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 onPressed: () {
-                                  // Validate returns true if the form is valid, or false otherwise.
                                   if (_formKey.currentState!.validate()) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
