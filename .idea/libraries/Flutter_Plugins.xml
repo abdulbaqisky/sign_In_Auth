@@ -1,6 +1,8 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$USER_HOME$/Downloads/flutter_windows_1.22.3-stable/flutter/.pub-cache/hosted/pub.dartlang.org/modal_progress_hud_nsn-0.1.0-nullsafety-1" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
   </library>

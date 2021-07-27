@@ -15,7 +15,6 @@ String password = "";
 bool showSpinner = false;
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -166,40 +165,43 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: ElevatedButton(
                                 child: Text('Log in'),
                                 onPressed: () async {
-                                  setState(() {
-                                    showSpinner = true;
-                                  });
-                                  var headers = {
-                                    'Content-Type': 'application/json'
-                                  };
-                                  var request = http.Request(
-                                      'POST',
-                                      Uri.parse(
-                                          'https://dev.hareo.com.ng/api/v1/auth/login/'));
-                                  request.body = json.encode({
-                                    "email": "$email",
-                                    "password": "$password"
-                                  });
-                                  request.headers.addAll(headers);
-
-                                  http.StreamedResponse response =
-                                      await request.send();
-
-                                  if (response.statusCode == 200) {
-                                    setState(() {
-                                      showSpinner = false;
+                                  //CircularProgressIndicator();
+                                  try {
+                                    var headers = {
+                                      'Content-Type': 'application/json'
+                                    };
+                                    var request = http.Request(
+                                        'POST',
+                                        Uri.parse(
+                                            'https://dev.hareo.com.ng/api/v1/auth/login/'));
+                                    request.body = json.encode({
+                                      "email": "$email",
+                                      "password": "$password"
                                     });
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SignedIn(),
-                                      ),
-                                    );
+                                    request.headers.addAll(headers);
+                                    http.StreamedResponse response =
+                                        await request.send();
+                                    if (response.statusCode == 200) {
+                                      SnackBar(
+                                        content: Text('User logged in'),
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SignedIn(),
+                                        ),
+                                      );
 
-                                    print(
-                                        await response.stream.bytesToString());
-                                  } else {
-                                    print(response.reasonPhrase);
+                                      print(await response.stream
+                                          .bytesToString());
+                                    } else {
+                                      SnackBar(
+                                        content: Text('User doesn\'t exists'),
+                                      );
+                                      print(response.reasonPhrase);
+                                    }
+                                  } catch (e) {
+                                    print(e);
                                   }
                                 }),
                           ),
@@ -280,9 +282,3 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 }
-
-/*
-Navigator.push(
-_MyHomePageState().context,
-MaterialPageRoute(builder: (context) => SignedIn()),
-);*/

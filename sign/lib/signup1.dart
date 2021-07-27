@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sign/main.dart';
 import 'package:sign/signup2.dart';
-import 'package:http/http.dart' as http;
 
 class Happen extends StatefulWidget {
   const Happen({Key? key}) : super(key: key);
@@ -35,6 +31,7 @@ class _HappenState extends State<Happen> {
 class SignUp extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
+  String fullName = "";
   String email = "";
   String phoneNumber = "";
   String password = "";
@@ -96,6 +93,22 @@ class SignUp extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    TextFormField(
+                      onChanged: (value) {
+                        fullName = value;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Full name',
+                        labelStyle: TextStyle(fontSize: 16),
+                        hintText: 'Enter your Full Name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your full name';
+                        }
+                        return null;
+                      },
+                    ),
                     TextFormField(
                       onChanged: (value) {
                         email = value;
@@ -192,6 +205,10 @@ class SignUp extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SignUp2(
+                                    fullName: fullName,
+                                    email: email,
+                                    phoneNumber: phoneNumber,
+                                    password: password,
                                     key: _formKey,
                                   ),
                                 ),
@@ -219,8 +236,7 @@ class SignUp extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignUp2()),
+                              MaterialPageRoute(builder: (context) => MyApp()),
                             );
                           },
                           child: Text(
@@ -241,29 +257,5 @@ class SignUp extends StatelessWidget {
         )),
       ),
     ]);
-  }
-}
-
-void signUp() async {
-  var headers = {'Content-Type': 'application/json'};
-  var request = http.Request(
-      'POST', Uri.parse('https://dev.hareo.com.ng/api/v1/auth/register/user/'));
-  request.body = json.encode({
-    "name": "caleb ogundiya",
-    "email": "calebogundiya@gmail.com",
-    "phone": "2348026311237",
-    "password": "T@stpassword1",
-    "sex": "male",
-    "dob": "12-06-2012"
-  });
-  request.headers.addAll(headers);
-
-  http.StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-    print(response.statusCode);
-  } else {
-    print(response.reasonPhrase);
   }
 }
